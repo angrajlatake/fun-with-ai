@@ -1,0 +1,10 @@
+.cardlist{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    max-width: 67.5rem;
+    margin: 0 auto;
+    padding: 2rem;
+}
