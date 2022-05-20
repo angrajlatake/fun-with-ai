@@ -1,17 +1,21 @@
 import './Card.scss'
 
-import React from 'react'
-
-const Card = ({item}) => {
+import {motion} from 'framer-motion'
+const Card = ({item, cardAnimation}) => {
   return (
-    <div className='card'>
+    <motion.div className='card'
+      variants={cardAnimation}
+      initial="hidden"
+      animate="show"
+      exit="exit"
+    >
         <div className="card__header">
             <h3>{item.prompt}</h3>
         </div>
         <div className="card__description">
             {item.response}
         </div>
-    </div>
+    </motion.div>
   )
 }
 
