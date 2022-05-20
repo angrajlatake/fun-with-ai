@@ -12,29 +12,38 @@ class App extends Component{
   };
   handleSubmit = (text) => {
     const configuration = new Configuration({
-      apiKey: process.env.REACT_APP_API_KEY,
+      apiKey: process.env.REACT_APP_API_URL,
     });
     const openai = new OpenAIApi(configuration);
 
     (async () => {
-      const completion = await openai.createCompletion("text-davinci-002", {
-        prompt: text,
-        temperature: 0.3,
-        max_tokens: 150,
-        top_p: 1,
-        frequency_penalty: 0,
-        presence_penalty: 0,
-      });
-      const response = await completion;
-      console.log(response.data.choices[0].text)
-      const newList = [{'prompt': text, "response":response.data.choices[0].text}, ...this.state.list]
-      this.setState(
-        {list: newList})
+      try {
+        const completion = await openai.createCompletion("text-davinci-002", {
+          prompt: text,
+          temperature: 0.3,
+          max_tokens: 150,
+          top_p: 1,
+          frequency_penalty: 0,
+          presence_penalty: 0,
+        });
+        const response = await completion;
+        console.log(response.data.choices[0].text)
+        const newList = [{'prompt': text, "response":response.data.choices[0].text}, ...this.state.list]
+        this.setState(
+          {list: newList})
+      } catch (error) {
+        if (error.response) {
+          console.log(error.response.status);
+          console.log(error.response.data);
+        } else {
+          console.log(error.message);
+        }
+      }
       
     })();
   };
   render(){
-
+    console.log(process.env.REACT_APP_API_URL)
     return (
       <div className="App">
         <Form handleSubmit={this.handleSubmit} listLen ={this.state.list.length} />
