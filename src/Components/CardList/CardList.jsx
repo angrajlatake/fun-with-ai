@@ -1,10 +1,7 @@
-
 import "./CardList.scss";
 import Card from "../Card/Card";
-import {motion, AnimatePresence } from "framer-motion";
-function CardList({list,loading}) {
-
-
+import { motion, AnimatePresence } from "framer-motion";
+function CardList({ list, loading }) {
   //variants for animation
   const container = {
     hidden: { opacity: 0 },
@@ -15,9 +12,9 @@ function CardList({list,loading}) {
         staggerChildren: 0.3,
       },
     },
-    exit:{
-      opacity:0,
-    }
+    exit: {
+      opacity: 0,
+    },
   };
 
   const cardAnimation = {
@@ -30,28 +27,26 @@ function CardList({list,loading}) {
         duration: 1,
       },
     },
-    exit:{
-     opacity: 1, y: 50,
-    }
+    exit: {
+      opacity: 1,
+      y: 50,
+    },
   };
 
   return (
     <AnimatePresence>
-      <motion.div className="cardlist"
+      <motion.div
+        className="cardlist"
         variants={container}
         initial="hidden"
         animate="show"
         exit="exit"
-        >
-
+      >
         {list.map((item, index) => {
-          return <Card key={index} item={item}
-          cardAnimation={cardAnimation}
-          />;
+          return <Card key={index} item={item} cardAnimation={cardAnimation} />;
         })}
       </motion.div>
-      </AnimatePresence>
-
+    </AnimatePresence>
   );
 }
 

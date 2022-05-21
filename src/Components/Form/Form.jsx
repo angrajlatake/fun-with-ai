@@ -1,49 +1,65 @@
 import "./Form.scss";
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-const Form = ({ handleSubmit, listLen}) => {
+
+const Form = ({ handleSubmit, listLen, loading, setLoading }) => {
   const [prompt, setPrompt] = useState(null);
+  const [invalid, setInvalid] = useState(false);
 
   useEffect(() => {
-    if (localStorage.getItem("prompt")){
+    if (localStorage.getItem("prompt")) {
       setPrompt(localStorage.getItem("prompt"));
-    };
-  },[])
-
+    }
+  }, []);
+  //animation variables
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+    },
+    exit: {
+      opacity: 0,
+    },
+  };
+  //check if prompt is valid
+  function checkInput(prompt) {
+    if (prompt && prompt.trim().length > 0) {
+      setInvalid(false);
+    } else {
+      setInvalid(true);
+    }
+  }
+  //handle input
   function formChange(e) {
     const textarea = e.target;
     setPrompt(textarea.value);
     textarea.style.height = "2rem";
     textarea.style.height = textarea.scrollHeight + "px";
     localStorage.setItem("prompt", textarea.value);
+    checkInput(prompt);
   }
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-    },
-    exit:{
-      opacity:0,
-    }
-  };
+
   function handleClick(e) {
     e.preventDefault();
-    handleSubmit(prompt);
-    setPrompt(null);
-    const input = document.getElementsByClassName("form__input");
-    input[0].value = "";
-    localStorage.removeItem("prompt");
+    if (prompt) {
+      setLoading(true);
+      checkInput(prompt);
+      handleSubmit(prompt);
+      setPrompt(null);
+      const input = document.getElementsByClassName("form__input");
+      input[0].value = "";
+      localStorage.removeItem("prompt");
+    } else {
+      setInvalid(true);
+    }
   }
 
   return (
-    <div className="form">
+    //if no responses are available, show full page height form
+    <div className={listLen > 0 ? "form" : "form__empty"}>
       <div className="form__wrapper">
         <motion.form
-          className={
-            listLen < 1
-              ? "form__container form__container--empty"
-              : "form__container"
-          }
+          className="form__container"
           variants={container}
           initial="hidden"
           animate="show"
@@ -55,12 +71,25 @@ const Form = ({ handleSubmit, listLen}) => {
             name="input"
             id="input"
             placeholder="Type Text here"
-            value={prompt ? prompt: ""}
+            value={prompt ? prompt : ""}
             onChange={formChange}
           ></textarea>
-          <button onClick={handleClick} className="form__button">
-            Submit
-          </button>
+          {invalid ? <p className="form__error">Please enter text</p> : null}
+          {loading ? (
+            <div className="rings">
+              <div className="ring ring1">
+                <div className="ring ring2">
+                  <div className="ring ring3">
+                    <div className="ring ring4"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <button onClick={handleClick} className="form__button">
+              Submit
+            </button>
+          )}
         </motion.form>
       </div>
     </div>
