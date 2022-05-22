@@ -12,6 +12,11 @@ const Form = ({ handleSubmit, listLen, loading, setLoading }) => {
     }
   }, []);
   //animation variables
+  const buttonVariant = {
+    hidden: {scale: 1, opacity: 0},
+    show: {scale: 1.1, opacity: 1, 
+      transition: {duration: 0.5, ease: "easeInOut", yoyo: Infinity}},
+  }
   const container = {
     hidden: { opacity: 0 },
     show: {
@@ -76,15 +81,13 @@ const Form = ({ handleSubmit, listLen, loading, setLoading }) => {
           ></textarea>
           {invalid ? <p className="form__error">Please enter text</p> : null}
           {loading ? (
-            <div className="rings">
-              <div className="ring ring1">
-                <div className="ring ring2">
-                  <div className="ring ring3">
-                    <div className="ring ring4"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <motion.button className="form__button"
+            variants={buttonVariant}
+            initial="hidden"
+            animate="show"
+            >
+              Thinking...
+            </motion.button>
           ) : (
             <button onClick={handleClick} className="form__button">
               Submit
